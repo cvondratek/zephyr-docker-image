@@ -85,6 +85,7 @@ RUN wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/s
 	wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements-doc.txt && \
 	wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements-run-test.txt && \
 	wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements-extras.txt && \
+	wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements-compliance.txt && \
 	pip3 install wheel &&\
 	pip3 install -r requirements.txt && \
 	pip3 install west &&\
@@ -105,11 +106,11 @@ RUN wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}
 	./cmake-${CMAKE_VERSION}-Linux-x86_64.sh --skip-license --prefix=/usr/local && \
 	rm -f ./cmake-${CMAKE_VERSION}-Linux-x86_64.sh
 
-RUN groupadd -g $GID -o user
+RUN groupadd -g $GID -o cvondrac
 
-RUN useradd -u $UID -m -g user -G plugdev user \
-	&& echo 'user ALL = NOPASSWD: ALL' > /etc/sudoers.d/user \
-	&& chmod 0440 /etc/sudoers.d/user
+RUN useradd -u $UID -m -g cvondrac -G plugdev cvondrac \
+	&& echo 'cvondrac ALL = NOPASSWD: ALL' > /etc/sudoers.d/cvondrac \
+	&& chmod 0440 /etc/sudoers.d/cvondrac
 
 # Set the locale
 ENV ZEPHYR_TOOLCHAIN_VARIANT=zephyr
@@ -119,16 +120,16 @@ ENV GNUARMEMB_TOOLCHAIN_PATH=/opt/toolchains/${GCC_ARM_NAME}
 ENV PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
 ENV DISPLAY=:0
 
-RUN chown -R user:user /home/user
+RUN chown -R cvondrac:cvondrac /home/cvondrac
 
-ADD ./entrypoint.sh /home/user/entrypoint.sh
-RUN dos2unix /home/user/entrypoint.sh
+ADD ./entrypoint.sh /home/cvondrac/entrypoint.sh
+RUN dos2unix /home/cvondrac/entrypoint.sh
 
 EXPOSE 5900
 
-ENTRYPOINT ["/home/user/entrypoint.sh"]
+ENTRYPOINT ["/home/cvondrac/entrypoint.sh"]
 CMD ["/bin/bash"]
-USER user
+USER cvondrac
 WORKDIR /workdir
 VOLUME ["/workdir"]
 
