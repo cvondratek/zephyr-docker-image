@@ -112,6 +112,8 @@ RUN useradd -u $UID -m -g cvondrac -G plugdev cvondrac \
 	&& echo 'cvondrac ALL = NOPASSWD: ALL' > /etc/sudoers.d/cvondrac \
 	&& chmod 0440 /etc/sudoers.d/cvondrac
 
+RUN apt-get update && apt-get install nano
+
 # Set the locale
 ENV ZEPHYR_TOOLCHAIN_VARIANT=zephyr
 ENV ZEPHYR_SDK_INSTALL_DIR=/opt/toolchains/zephyr-sdk-${ZSDK_VERSION}
